@@ -1,0 +1,15 @@
+<% include ./partials/head %>
+
+  <div class="container jumbotron mt-4 text-center">
+    <div class="background"
+      style="
+        background-image: url(<%= user.photo %>);
+        width: 150px; height: 150px; border-radius: 50%;  margin: 0 auto;
+      "
+    ></div>
+    <h3 class="mt-2">Name: <%= user.name %></h3>
+    <h4>Gender: <%= user.gender %></h4>
+    <h5><a href="/profile/edit">Edit Profile</a> | <a href="/profile/chat">Start Chat</a></h5>
+  </div>
+
+<% include ./partials/footer %>
