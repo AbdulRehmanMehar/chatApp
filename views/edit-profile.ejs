@@ -1,0 +1,41 @@
+<% include ./partials/head %>
+  <div class="container jumbotron mt-4 ">
+    <form action="/profile/updateProfile" method="POST">
+      <div class="form-group">
+       <!-- <div class="background" id="viewImg" style="width:150px; height:150px; margin:0 auto; border-radius: 50%"></div> -->
+        <img id="viewImg" height="150" style="margin: 0 auto;" >
+      </div>
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" class="form-control" name="name" value="<%= user.name %>" placeholder="Your Name" required>
+      </div>
+      <div class="form-group">
+        <label>Gender</label>
+        <input type="text" class="form-control" name="gender" value="<%= user.gender %>" placeholder="Your Gender" required>
+      </div>
+      <div class="form-group">
+        <label>Image URL</label>
+        <input type="text" class="form-control" id="urlImg" name="img" value="<%= user.photo %>" placeholder="URL to Image" required>
+      </div>
+      <button type="submit" class="btn btn-outline-info form-control">Update</button>
+    </form>
+  </div>
+<% include ./partials/footer %>
+
+<script>
+  let urlImg = document.getElementById('urlImg');
+  // Set Value to Img
+  let viewImg = document.getElementById('viewImg');
+  viewImg.src = urlImg.value;
+
+  // Check for url to change
+  urlImg.addEventListener('change' , () => {
+    viewImg.src = urlImg.value;
+  });
+  urlImg.addEventListener('mouseenter', () => {
+    viewImg.src = urlImg.value;
+  });
+  urlImg.addEventListener('mouseleave', () => {
+    viewImg.src = urlImg.value;
+  });  
+</script>
