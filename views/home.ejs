@@ -1,0 +1,9 @@
+<% include ./partials/head %>
+  <div class="container jumbotron mt-4 text-center">
+    <h2>Welcome to Chat App</h2>
+    <h4>Please Go to 
+      <% if(!user){ %> <a href="/auth/login">Login</a> 
+      <% }else{ %> <a href="/profile">Profile</a><% } %>
+    </h4>
+  </div>
+<% include ./partials/footer %>
