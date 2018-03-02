@@ -1,0 +1,8 @@
+.background{
+  background-image: url(../img/person-dummy.jpg);
+  background-size: cover;
+  background-position: center center;
+}
+.hidden{
+  display: none;
+}
