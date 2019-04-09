@@ -4,32 +4,39 @@ const authRoutes = require('./routes/auth-routes'); // Self Created Auth Routes 
 const profileRoutes = require('./routes/profile-routes'); // Self Created Profile Routes File
 const passportSetup = require('./config/passport-setup'); // Self Created Passport Config File
 const keys = require('./config/keys'); // Self Created Key  File
-const Chat = require('./models/chat-model'); // Self Created Chat Model
 const mongoose = require('mongoose');
-const cookieSession = require('cookie-session');
+const session = require('express-session');
 const socket = require('socket.io');
 const path = require('path');
 const app = express();
+const MongoStore = require('connect-mongo')(session);
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const passportSocketIo = require('passport.socketio');
 const server = require('http').createServer(app);
-const io = require('socket.io')(server);
+const io = socket(server);
 
+/*
+------ Mongoose Setup
+*/
+mongoose.connect(process.env.mongoURI || keys.mongoDB.uri, { useNewUrlParser: true } , () => console.log('Connected to MongoDB'));
+
+let theStore = new MongoStore({
+  mongooseConnection: mongoose.connection
+});
 
 app.set('view engine','ejs');
-
-
-// Static path for assets
 app.use('/assets', express.static(path.join(__dirname, 'assets')))
 
-app.use(cookieSession({
-  maxAge: 15 * 24 * 60 * 60 * 1000,
-  keys: [keys.session.enctryptionkey]  
+app.use(session({
+  resave: false,
+  key: 'express.sid',
+  saveUninitialized: false,
+  secret: process.env.encKey || keys.session.enctryptionkey,
+  store: theStore
 }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
-
-
 
 // cache disabling
 app.use(function(req, res, next) {
@@ -41,9 +48,10 @@ app.use(function(req, res, next) {
 app.use(passport.initialize());
 app.use(passport.session());
 
+passportSetup(passport);
 
 app.get('/', (req, res) => res.render('home', { user: req.user }));
-server.listen(3000, () => console.log('app started on 3000'));
+server.listen(3000, () => console.log('app   on 3000'));
 
 /*
 ------- Self Created Routes Setup
@@ -55,62 +63,45 @@ app.use('/profile', profileRoutes );
 
 
 /*
------- Mongoose Setup
-*/
-mongoose.connect(keys.mongoDB.uri , () => console.log('Connected to MongoDB'));
-
-/*
 ------ Socket.io Setup
 */
-io.on('connection',  (socket) => {
 
-  socket.on('chat', (data) => {
-    io.sockets.emit('chat' , data);
-    Chat.findOne(
-      {
-        $or: [
-          {users: {userOneID: data.userID ,userTwoID: "5a9415761897cf08d0403298"}}, 
-          {users: {userOneID: "5a9415761897cf08d0403298", userTwoID: data.userID }}
-        ]
-      }
-    ).then((chatExsists) => {
-      if(chatExsists){
-        Chat.findOneAndUpdate(
-          
-          {
-            $or: [
-              {users: {userOneID: data.userID ,userTwoID: "5a9415761897cf08d0403298"}}, 
-              {users: {userOneID: "5a9415761897cf08d0403298", userTwoID: data.userID }}
-            ]
-          },
-          
-          {"$push":{"chatData":{message: data.message,userID: data.userID}}},
-          { "new": true, "upsert": true },
-          function (err, managerparent) {
-            if (err) console.log(err);
-          }
-        );
-      }else{
-        new Chat({
-          users: {
-            userOneID: data.userID,
-            userTwoID: "5a9415761897cf08d0403298"
-          },
-          chatData:[
-            {
-              message: data.message,
-              userID: data.userID
-            }
-          ]
-        }).save().then((newChat) => {
-          
-        });
-      }
-    });
+io.use(passportSocketIo.authorize({
+  cookieParser: cookieParser,
+  key: 'express.sid',
+  secret: process.env.encKey || keys.session.enctryptionkey,
+  store: theStore,
+  passport: passport,
+  success: (data, accept) => {
+    accept();
+  },
+  fail: (data, message, error, accept) => {
+    if (error)
+      throw new Error(message);
+    accept(null, false);
+  },  
+
+}));
+
+let socks = [];
+
+io.on('connection', (socket) => {
+
+  socks.push({
+    socket: socket.id,
+    uid: socket.request.user._id,
+    user: socket.request.user
+  });
+  
+  io.emit('users', socks);
+
+  socket.on('message', (data) => {
+    let to = socks.filter(sock => sock.uid == data.to)[0].socket;
+    io.to(to).emit('message', { from: socket.request.user._id, message: data.message });
   });
 
-  socket.on('typing', (data) => {
-    socket.broadcast.emit('typing',data);
+  socket.on('disconnect', () => {
+    socks = socks.filter(sock => sock.socket !== socket.id);
   });
 
 });
