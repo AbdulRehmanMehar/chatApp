@@ -12,6 +12,7 @@
   height: var(--height);
   background: #cccccc;
   padding: 8px 0px 0px;
+  overflow-y: auto;
 }
 
 .chatarea{
@@ -70,14 +71,20 @@
 
 .chatarea .messages{
   height: calc(100% - 105px);
+  overflow-y: auto;
   /* background: #000 */
 }
 
 .chatarea .messages .message{
   margin: 2px 20px;
+  position: relative;
+}
+
+.chatarea .messages .message .data{
+  display: block;
   padding: 7px 15px;
   width: fit-content;
-  background: #f00;
+  background: #f5f6f8;
   border-radius: 17px;
 }
 
@@ -85,9 +92,9 @@
   margin-top: 7px;
 }
 
-.chatarea .messages .message.recieved{
-  float: right;
-  background: #ff88ff;
+.chatarea .messages .message.recieved .data{
+  background: #d3d3d3;
+  margin-left: auto;
 }
 
 
