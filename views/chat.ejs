@@ -7,22 +7,22 @@
         <div id="users"></div>
       </div>
       <div class="col-9 chatarea">
-        <div class="topbar">
-          <div class="bg" id="current-user-bg" style="background: #fff; float: left; margin-right: 10px;"></div>
-          <div style="margin-top: 6px;">
-            <h3 id="current-user-name">User</h3>
+          <div class="topbar">
+            <div class="bg" id="current-user-bg" style="background: #fff; float: left; margin-right: 10px;"></div>
+            <div style="margin-top: 6px;">
+              <h4 id="current-user-name">Select a User</h4>
+            </div>
           </div>
-        </div>
-        <div class="messages" id="messages">
-        </div>
-        
-        <div class="form" onsubmit="return sendMessage(event)">
-          <form action="#" id="chat-form">
-            <input type="text" id="text-message" placeholder="Hi">
-            <input type="hidden" id="message-to">
-            <button type="submit">Send</button>
-          </form>
-        </div>
+          <div class="messages" id="messages">
+          </div>
+          <div class="form" onsubmit="return sendMessage(event)">
+            <form action="#" id="chat-form">
+              <input type="text" id="text-message" placeholder="Hi">
+              <input type="hidden" id="message-to">
+              <button type="submit">Send</button>
+            </form>
+          </div>
+        <!-- </div> -->
       </div>
     </div>
 </div>

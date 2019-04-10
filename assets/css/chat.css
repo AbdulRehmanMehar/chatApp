@@ -46,7 +46,7 @@
   border-radius: 50%;
 }
 
-.sidebar span{
+.sidebar .name{
   display: block;
   font-weight: 500;
   padding-top: 12px;
