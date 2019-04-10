@@ -1,4 +1,3 @@
-
 let userElement = document.querySelector('#users');
 
 let messageElement = document.querySelector('#messages');
@@ -17,7 +16,8 @@ socket.on('connect', () => {
               <div id="${user.uid}" uphoto="${photo}" uname="${name}" class="mt-1 mb-1 user" onclick="setReciever(this)">
                 <div class="bg" style="background-image: url(${photo}); float: left; margin-right: 10px;"></div>
                 <div>
-                  <span>${name}</span>
+                  <span class="name">${name}</span>
+                  <span id="${user.uid}-msg-count" style="float: right; margin-top: -15px; background: #f4f5f7;"></span>
                 </div>
               </div>
             `;
@@ -27,10 +27,30 @@ socket.on('connect', () => {
   });
 
   socket.on('message', (data) => {
-    messageElement.innerHTML += ` 
-      <div class="message recieved"><span class="data">${data.message}<span></div> 
-    `;
-    messageElement.scrollTop = messageElement.scrollHeight - messageElement.clientHeight;
+    let reciever = document.getElementById('message-to').value;
+    if(reciever === data.from){
+      messageElement.innerHTML += ` 
+        <div class="message recieved"><span class="data">${data.message}<span></div> 
+      `;
+      messageElement.scrollTop = messageElement.scrollHeight - messageElement.clientHeight;
+    }else{
+      let ref = document.getElementById(data.from + '-msg-count');
+      if(!ref.innerHTML){
+        ref.innerHTML = 1;
+      }else{
+        ref.innerHTML = parseInt(ref.innerHTML) + 1;
+      }
+    }
+  });
+
+  socket.on('conversation', (data) => {
+    messageElement.innerHTML = '';
+    data.forEach(doc => {
+      messageElement.innerHTML += ` 
+        <div class="message ${doc.to == cuser ? "recieved": null}"><span class="data">${doc.message}<span></div> 
+      `;
+      messageElement.scrollTop = messageElement.scrollHeight - messageElement.clientHeight;
+    });
   });
 
 });
@@ -44,6 +64,8 @@ let setReciever = (event) => {
   document.getElementById(event.id).classList.add('active');
   document.getElementById('current-user-name').innerHTML = ref.attributes.uname.value;
   document.getElementById('current-user-bg').style.backgroundImage = `url(${ref.attributes.uphoto.value})`;
+  socket.emit('get-conversation', event.id);
+  document.getElementById(event.id + '-msg-count').innerHTML = '';
 }
 
 let sendMessage = (event) => {
