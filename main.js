@@ -9,6 +9,7 @@ const session = require('express-session');
 const socket = require('socket.io');
 const path = require('path');
 const app = express();
+const Chat = require('./models/chat-model');
 const MongoStore = require('connect-mongo')(session);
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -96,8 +97,29 @@ io.on('connection', (socket) => {
   io.emit('users', socks);
 
   socket.on('message', (data) => {
-    let to = socks.filter(sock => sock.uid == data.to)[0].socket;
-    io.to(to).emit('message', { from: socket.request.user._id, message: data.message });
+    if(data.to && data.message){
+      let to = socks.filter(sock => sock.uid == data.to)[0].socket;
+      let chat = new Chat({
+        to: data.to,
+        from: socket.request.user._id,
+        message: data.message
+      });
+      chat.save()
+        .then(_ => io.to(to).emit('message', { from: socket.request.user._id, message: data.message }));
+    }
+  });
+
+  socket.on('get-conversation', (uid) => {
+    let qry = {
+      $or: [
+        {to: uid, from: socket.request.user._id},
+        {to: socket.request.user._id, from: uid}
+      ]
+    };
+    Chat.find(qry).exec()
+      .then(results => {
+        socket.emit('conversation', results);
+      })
   });
 
   socket.on('disconnect', () => {
