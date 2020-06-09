@@ -51,6 +51,8 @@ module.exports = (passport) => {
           status: "online"
         }).save().then((newUser) => {
           done(null, newUser);
+        }).catch(error => {
+          done(error, null);
         });
       }
     });
@@ -83,6 +85,8 @@ module.exports = (passport) => {
           status: "online"
         }).save().then((newUser) => {
           done(null, newUser);
+        }).catch(error => {
+          done(error, null);
         });
       }
     });
@@ -111,6 +115,8 @@ module.exports = (passport) => {
           status: "online"
         }).save().then((newUser) => {
           done(null, newUser);
+        }).catch(error => {
+          done(error, null);
         });
       }
     });
