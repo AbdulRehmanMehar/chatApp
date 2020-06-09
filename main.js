@@ -20,7 +20,7 @@ const io = socket(server);
 /*
 ------ Mongoose Setup
 */
-mongoose.connect(process.env.mongoURI || keys.mongoDB.uri, { useNewUrlParser: true } , () => console.log('Connected to MongoDB'));
+mongoose.connect(keys.mongoDB.uri, { useNewUrlParser: true } , () => console.log('Connected to MongoDB'));
 
 let theStore = new MongoStore({
   mongooseConnection: mongoose.connection
