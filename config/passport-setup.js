@@ -75,7 +75,8 @@ module.exports = (passport) => {
       } else {
         let gender, photo;
         (profile.gender) ? gender = profile.gender : gender = "undefined";
-        (profile.photos[0].value) ? photo = profile.photos[0].value : photo = "../img/person/dummy.jpg";
+        if (profile.photos)
+          (profile.photos[0].value) ? photo = profile.photos[0].value : photo = "../img/person/dummy.jpg";
         new User({
           userId: profile.id,
           name: profile.displayName,
