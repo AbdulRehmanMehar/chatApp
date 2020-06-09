@@ -34,9 +34,9 @@ module.exports = (passport) => {
   */
 
   passport.use(new TwitterStrategy({
-    consumerKey: process.env.twitterKey || keys.twitter.consumerKey,
-    consumerSecret: process.env.twitterSecret || keys.twitter.consumerSecret,
-    callbackURL: process.env.twitterCb || keys.twitter.callbackURL
+    consumerKey: keys.twitter.consumerKey,
+    consumerSecret: keys.twitter.consumerSecret,
+    callbackURL: keys.twitter.callbackURL
   }, (token, tokenSecret, profile, done) => {
     User.findOne({ provider: profile.provider, userId: profile.id }).then((userExsists) => {
       if (userExsists) {
@@ -62,41 +62,41 @@ module.exports = (passport) => {
   ---------- Facebook Strategy
   */
 
-  passport.use(new FacebookStrategy({
-    clientID: process.env.facebookKey || keys.facebook.clientID,
-    clientSecret: process.env.facebookSecret || keys.facebook.clientSecret,
-    callbackURL: process.env.facebookCb || keys.facebook.callbackURL
-  }, (accessToken, refreshToken, profile, done) => {
-    User.findOne({ provider: profile.provider, userId: profile.id }).then((userExsists) => {
-      if (userExsists) {
-        done(null, userExsists);
-      } else {
-        let gender, photo;
-        (profile.gender) ? gender = profile.gender : gender = "undefined";
-        (profile.photos[0].value) ? photo = profile.photos[0].value : photo = "../img/person/dummy.jpg";
-        new User({
-          userId: profile.id,
-          name: profile.displayName,
-          gender: gender,
-          photo: photo,
-          provider: profile.provider,
-          status: "online"
-        }).save().then((newUser) => {
-          done(null, newUser);
-        });
-      }
-    });
-  }
-  ));
+  // passport.use(new FacebookStrategy({
+  //   clientID: process.env.facebookKey || keys.facebook.clientID,
+  //   clientSecret: process.env.facebookSecret || keys.facebook.clientSecret,
+  //   callbackURL: process.env.facebookCb || keys.facebook.callbackURL
+  // }, (accessToken, refreshToken, profile, done) => {
+  //   User.findOne({ provider: profile.provider, userId: profile.id }).then((userExsists) => {
+  //     if (userExsists) {
+  //       done(null, userExsists);
+  //     } else {
+  //       let gender, photo;
+  //       (profile.gender) ? gender = profile.gender : gender = "undefined";
+  //       (profile.photos[0].value) ? photo = profile.photos[0].value : photo = "../img/person/dummy.jpg";
+  //       new User({
+  //         userId: profile.id,
+  //         name: profile.displayName,
+  //         gender: gender,
+  //         photo: photo,
+  //         provider: profile.provider,
+  //         status: "online"
+  //       }).save().then((newUser) => {
+  //         done(null, newUser);
+  //       });
+  //     }
+  //   });
+  // }
+  // ));
 
   /*
   ---------- Google plus Strategy
   */
 
   passport.use(new GoogleStrategy({
-    clientID:  process.env.googleKey || keys.google.clientID,
-    clientSecret: process.env.googleSecret ||  keys.google.clientSecret,
-    callbackURL: process.env.googleCb ||  keys.google.callbackURL
+    clientID:  keys.google.clientID,
+    clientSecret: keys.google.clientSecret,
+    callbackURL: keys.google.callbackURL
   }, (accessToken, refreshToken, profile, done) => {
     User.findOne({ provider: profile.provider, userId: profile.id }).then((userExsists) => {
       if (userExsists) {
