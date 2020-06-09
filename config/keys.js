@@ -11,5 +11,8 @@ module.exports = {
     },
     mongoDB: {
         uri: process.env.mongoURI
+    },
+    session: {
+        enctryptionkey: process.env.encKey
     }
 };

@@ -33,7 +33,7 @@ app.use(session({
   resave: false,
   key: 'express.sid',
   saveUninitialized: false,
-  secret: process.env.encKey || keys.session.enctryptionkey,
+  secret: keys.session.enctryptionkey,
   store: theStore
 }));
 app.use(bodyParser.urlencoded({ extended: false }));
