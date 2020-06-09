@@ -14,5 +14,8 @@ module.exports = {
     },
     session: {
         enctryptionkey: process.env.encKey
+    },
+    app: {
+        PORT: process.env.PORT
     }
 };

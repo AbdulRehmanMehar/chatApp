@@ -52,7 +52,7 @@ app.use(passport.session());
 passportSetup(passport);
 
 app.get('/', (req, res) => res.render('home', { user: req.user }));
-server.listen(3000, () => console.log('app   on 3000'));
+server.listen(keys.app.PORT, () => console.log('app is running on PORT:'+ keys.app.PORT));
 
 /*
 ------- Self Created Routes Setup
