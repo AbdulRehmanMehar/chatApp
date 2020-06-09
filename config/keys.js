@@ -9,6 +9,11 @@ module.exports = {
         consumerSecret: process.env.twitterSecret,
         callbackURL: process.env.twitterCb
     },
+    facebook: {
+        clientID: process.env.facebookKey,
+        clientSecret: process.env.facebookSecret,
+        callbackURL: process.env.facebookCb
+    },
     mongoDB: {
         uri: process.env.mongoURI
     },

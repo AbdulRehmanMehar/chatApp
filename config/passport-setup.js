@@ -1,4 +1,4 @@
-const GoogleStrategy = require('passport-google-oauth20');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook');
 const TwitterStrategy = require('passport-twitter');
 const keys = require('./keys');
@@ -62,32 +62,32 @@ module.exports = (passport) => {
   ---------- Facebook Strategy
   */
 
-  // passport.use(new FacebookStrategy({
-  //   clientID: process.env.facebookKey || keys.facebook.clientID,
-  //   clientSecret: process.env.facebookSecret || keys.facebook.clientSecret,
-  //   callbackURL: process.env.facebookCb || keys.facebook.callbackURL
-  // }, (accessToken, refreshToken, profile, done) => {
-  //   User.findOne({ provider: profile.provider, userId: profile.id }).then((userExsists) => {
-  //     if (userExsists) {
-  //       done(null, userExsists);
-  //     } else {
-  //       let gender, photo;
-  //       (profile.gender) ? gender = profile.gender : gender = "undefined";
-  //       (profile.photos[0].value) ? photo = profile.photos[0].value : photo = "../img/person/dummy.jpg";
-  //       new User({
-  //         userId: profile.id,
-  //         name: profile.displayName,
-  //         gender: gender,
-  //         photo: photo,
-  //         provider: profile.provider,
-  //         status: "online"
-  //       }).save().then((newUser) => {
-  //         done(null, newUser);
-  //       });
-  //     }
-  //   });
-  // }
-  // ));
+  passport.use(new FacebookStrategy({
+    clientID: keys.facebook.clientID,
+    clientSecret: keys.facebook.clientSecret,
+    callbackURL: keys.facebook.callbackURL
+  }, (accessToken, refreshToken, profile, done) => {
+    User.findOne({ provider: profile.provider, userId: profile.id }).then((userExsists) => {
+      if (userExsists) {
+        done(null, userExsists);
+      } else {
+        let gender, photo;
+        (profile.gender) ? gender = profile.gender : gender = "undefined";
+        (profile.photos[0].value) ? photo = profile.photos[0].value : photo = "../img/person/dummy.jpg";
+        new User({
+          userId: profile.id,
+          name: profile.displayName,
+          gender: gender,
+          photo: photo,
+          provider: profile.provider,
+          status: "online"
+        }).save().then((newUser) => {
+          done(null, newUser);
+        });
+      }
+    });
+  }
+  ));
 
   /*
   ---------- Google plus Strategy
