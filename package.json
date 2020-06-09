@@ -4,13 +4,13 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "nodemon main.js"
+    "start": "node main.js"
   },
   "author": "Abdul Rehman",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.2",
-    "connect-mongo": "^2.0.3",
+    "connect-mongo": "^3.2.0",
     "cookie-parser": "^1.4.4",
     "cookie-session": "^2.0.0-beta.3",
     "ejs": "^2.5.7",
@@ -25,5 +25,8 @@
     "socket.io": "^2.0.4",
     "socket.io-mongodb": "^1.1.1",
     "socket.io.users": "^2.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
   }
 }
