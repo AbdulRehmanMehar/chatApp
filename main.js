@@ -52,6 +52,7 @@ app.use(passport.session());
 passportSetup(passport);
 
 app.get('/', (req, res) => res.render('home', { user: req.user }));
+app.get('/privacy-policy', (req, res) => res.render('privacy-policy'));
 server.listen(keys.app.PORT, () => console.log('app is running on PORT:'+ keys.app.PORT));
 
 /*
